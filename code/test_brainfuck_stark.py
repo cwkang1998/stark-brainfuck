@@ -165,14 +165,17 @@ def mallorys_simulator(program, input_data=[]):
 def test_bfs():
     generator = BaseField.main().generator()
     xfield = ExtensionField.main()
-    #program = VirtualMachine.compile(">>[++-]<++++++++")
-    program = VirtualMachine.compile(
-        ">++++++++++[>+++><<-]>+++><<>.................")
+    # program = VirtualMachine.compile(">>[++-]<++++++++")
+    # program = VirtualMachine.compile(
+    #     ">++++++++++[>+++><<-]>+++><<>.................")
     # program = VirtualMachine.compile(",+.")
     # program = VirtualMachine.compile("++++++++++++++++++++.")
     # program = VirtualMachine.compile(",.........")
     # program = VirtualMachine.compile(",...")
-    program = VirtualMachine.compile("++++")
+    # program = VirtualMachine.compile("++++")
+# Print "Hello World!"
+    program = VirtualMachine.compile(
+        "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.")
 
     running_time, input_symbols, output_symbols = VirtualMachine.run(program)
 
@@ -180,9 +183,7 @@ def test_bfs():
     print("input symbols:", input_symbols)
     print("output_symbols:", output_symbols)
 
-    # Print "Hello World!"
-    # program = VirtualMachine.compile(
-    #     "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.")
+    
     processor_matrix, memory_matrix, instruction_matrix, input_matrix, output_matrix = VirtualMachine.simulate(
         program, input_data=input_symbols)
     assert (running_time == len(processor_matrix))
@@ -208,8 +209,7 @@ def test_bfs():
 
     # collapse matrix into list for input and output
     #input_symbols = [row[0] for row in input_matrix]
-    #output_symbols = [row[0] for row in output_matrix]
-
+    #output_symbols = [row[0] for row in output_matrix
     verdict = bfs.verify(proof)
     assert (verdict == True), "honest proof fails to verify"
     print("output length was:", len(output_symbols))
@@ -250,3 +250,7 @@ def set_adversarial_is_zero_value_test():
     assert not success_of_mallory, "Mallory's proof must fail to verify"
     print("Mallory's attack was defeated.")
     print("https://youtu.be/4aof9KxIJZo")
+
+
+if __name__ == "__main__":
+    test_bfs()
