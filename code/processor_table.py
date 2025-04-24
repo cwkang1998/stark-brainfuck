@@ -220,7 +220,7 @@ class ProcessorTable(Table):
     def instruction_zerofier(current_instruction):
         field = list(current_instruction.dictionary.values())[0].field
         acc = MPolynomial.constant(field.one())
-        for ch in ['[', ']', '<', '>', '+', '-', ',', '.']:
+        for ch in ['[', ']', '<', '>', '+', '-', ',', '.', '^']:
             acc *= current_instruction - \
                 MPolynomial.constant(field(ord(ch)))
         return acc

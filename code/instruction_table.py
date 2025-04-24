@@ -64,7 +64,7 @@ class InstructionTable(Table):
     def instruction_zerofier(current_instruction):
         field = list(current_instruction.dictionary.values())[0].field
         acc = MPolynomial.constant(field.one())
-        for ch in ['[', ']', '<', '>', '+', '-', ',', '.']:
+        for ch in ['[', ']', '<', '>', '+', '-', ',', '.', '^']:
             ch_ = MPolynomial.constant(field(ord(ch)))
             acc *= current_instruction - ch_
         return acc
