@@ -143,6 +143,10 @@ class VirtualMachine:
             elif program[instruction_pointer] == F('-'):
                 instruction_pointer += 1
                 memory[memory_pointer] = memory.get(memory_pointer, zero) - one
+            elif program[instruction_pointer] == F('^'):
+                instruction_pointer += 1
+                memory[memory_pointer] = memory.get(memory_pointer, zero) * memory.get(memory_pointer, zero)
+                print("memory[memory_pointer]:", memory[memory_pointer])
             elif program[instruction_pointer] == F('.'):
                 instruction_pointer += 1
                 output_data += chr(int(memory[memory_pointer].value % 256))
@@ -243,6 +247,11 @@ class VirtualMachine:
                 register.instruction_pointer += one
                 memory[register.memory_pointer] = memory.get(
                     register.memory_pointer, zero) - one
+
+            elif register.current_instruction == F('^'):
+                register.instruction_pointer += one
+                memory[register.memory_pointer] = memory.get(
+                    register.memory_pointer, zero) * memory.get(register.memory_pointer, zero)
 
             elif register.current_instruction == F('.'):
                 register.instruction_pointer += one

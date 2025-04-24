@@ -290,7 +290,8 @@ class Table:
         degree_bounds = [mpo.symbolic_degree_bound(
             max_degrees) - 1 for mpo in self.terminal_constraints_ext(challenges, terminals)]
         return degree_bounds
-
+    
+    # TODO: make this part a bit faster.
     def all_quotients(self, domain, codewords, challenges, terminals):
         boundary_quotients = self.boundary_quotients(
             domain, codewords, challenges)

@@ -133,3 +133,18 @@ def test_extend():
 
     # assert(processor_extension.output_evaluation_terminal ==
     #        VirtualMachine.evaluation_terminal([row[0] for row in output_table.table], delta)), f"processor output evaluation == {processor_extension.output_evaluation_terminal} =/= locally computed output evaluation == {VirtualMachine.evaluation_terminal(output_table.table, delta)}"
+
+
+
+def test_power():
+    code = "++^."
+    program = VirtualMachine.compile(code)
+    running_time, input_data, output_data = VirtualMachine.run(program)
+    processor_table, instruction_table, memory_table, input_table, output_table = VirtualMachine.simulate(
+        program)
+    print("running_time:", running_time)
+    print("input_data:", input_data)
+    print("output_data:", output_data)
+
+if __name__ == "__main__":
+    test_power()
