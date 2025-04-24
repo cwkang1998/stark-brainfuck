@@ -16,9 +16,6 @@ from ntt import *
 from functools import reduce
 import os
 
-# Attempted multithreading
-from threading import Thread
-
 
 class BrainfuckStark:
     field = BaseField.main()
@@ -171,33 +168,13 @@ class BrainfuckStark:
             randomizer_polynomial)
         randomizer_codewords += [randomizer_codeword]
 
-        reduction_result = {
-            "base_codewords": [],
-            "base_degree_bounds": []
-        }
-
-        def compute_base_codewords(reduction_result):
-            reduction_result["base_codewords"] = reduce(
-                lambda x, y: x+y, [table.lde(self.fri.domain) for table in self.tables], [])
-
-        def compute_base_degree_bounds(reduction_result):
-            reduction_result["base_degree_bounds"] = reduce(
-                lambda x, y: x+y, [[table.interpolant_degree()] * table.base_width for table in self.tables], [])
-            
-        base_codewords_compute = Thread(target=compute_base_codewords, args=(reduction_result,))
-        base_degree_bounds_compute = Thread(target=compute_base_degree_bounds, args=(reduction_result,))
-
-        base_codewords_compute.start()
-        base_degree_bounds_compute.start()
-
-        base_codewords_compute.join()
-        base_degree_bounds_compute.join()
-
-        # Reassign to local variables
-        base_codewords = reduction_result["base_codewords"]
-        base_degree_bounds = reduction_result["base_degree_bounds"]
-
+        base_codewords = reduce(
+            lambda x, y: x+y, [table.lde(self.fri.domain) for table in self.tables], [])
         all_base_codewords = randomizer_codewords + base_codewords
+
+        base_degree_bounds = reduce(
+            lambda x, y: x+y, [[table.interpolant_degree()] * table.base_width for table in self.tables], [])
+
         zipped_codeword = list(zip(*all_base_codewords))
         base_tree = SaltedMerkle(zipped_codeword)
         proof_stream.push(base_tree.root())
@@ -223,28 +200,17 @@ class BrainfuckStark:
 
         extension_degree_bounds = reduce(lambda x, y: x+y, [[table.interpolant_degree()] * (
             table.full_width - table.base_width) for table in self.tables], [])
-        
-        quotient_codewords = []
-        def compute_quotient_codewords(codewords):
-            for table in self.tables:
-                codewords += table.all_quotients(
-                    self.fri.domain, table.codewords, challenges, terminals)
 
+        quotient_codewords = []
+
+        for table in self.tables:
+            quotient_codewords += table.all_quotients(
+                self.fri.domain, table.codewords, challenges, terminals)
 
         quotient_degree_bounds = []
-        def compute_quotient_degree_bounds(degree_bounds):
-            for table in self.tables:
-                degree_bounds += table.all_quotient_degree_bounds(
-                    challenges, terminals)
-        
-        quotient_codewords_compute = Thread(target=compute_quotient_codewords, args=(quotient_codewords,))
-        quotient_degree_bounds_compute = Thread(target=compute_quotient_degree_bounds, args=(quotient_degree_bounds,))
-
-        quotient_codewords_compute.start()
-        quotient_degree_bounds_compute.start()
-
-        quotient_codewords_compute.join()
-        quotient_degree_bounds_compute.join()
+        for table in self.tables:
+            quotient_degree_bounds += table.all_quotient_degree_bounds(
+                challenges, terminals)
 
         # ... and equal initial values
         for pa in self.permutation_arguments:
@@ -288,7 +254,6 @@ class BrainfuckStark:
                 print(
                     f"degree of interpolation, base_codewords({i}): {interpolated.degree()}")
                 assert (interpolated.degree() <= self.max_degree)
-
         assert (len(extension_codewords) ==
                 num_extension_polynomials), f"number of extension codewords {len(extension_codewords)} =/= number of extension polynomials {num_extension_polynomials}"
         for i in range(len(extension_codewords)):
@@ -302,9 +267,9 @@ class BrainfuckStark:
                 print(
                     f"degree of interpolation, extension_codewords({i}): {interpolated.degree()}")
                 assert (interpolated.degree() <= self.max_degree)
-
         assert (len(quotient_codewords) ==
                 num_quotient_polynomials), f"number of quotient codewords {len(quotient_codewords)} =/= number of quotient polynomials {num_quotient_polynomials}"
+
         for quotient_codeword, quotient_degree_bound in zip(quotient_codewords, quotient_degree_bounds):
             terms += [quotient_codeword]
             if os.environ.get('DEBUG') is not None:
