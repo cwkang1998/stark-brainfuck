@@ -144,7 +144,7 @@ class ProcessorTable(Table):
         polynomials = [MPolynomial.zero()] * 3
 
         # instruction-specific polynomials
-        for c in "[]<>+-,.":
+        for c in "[]<>+-,.^":
             # max deg 4
             instr = ProcessorTable.instruction_polynomials(c,
                                                            cycle,
