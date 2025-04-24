@@ -49,7 +49,7 @@ class ProcessorTable(Table):
         field = list(indeterminate.dictionary.values())[0].field
         one = MPolynomial.constant(field.one())
         acc = one
-        for c in "[]<>,.+-":
+        for c in "[]<>,.+-^":
             if c != instruction:
                 acc *= indeterminate - \
                     MPolynomial.constant(field(ord(c)))
@@ -120,11 +120,20 @@ class ProcessorTable(Table):
             polynomials[1] = memory_pointer_next - memory_pointer
             polynomials[2] = memory_value_next - memory_value
 
+        # squaring
+        elif instr == '^':
+            polynomials[0] = instruction_pointer_next - \
+                instruction_pointer - one
+            polynomials[1] = memory_pointer_next - memory_pointer
+            polynomials[2] = memory_value_next - memory_value * memory_value
+ 
         # account for padding:
         # deactivate all polynomials if current instruction is zero
         for i in range(len(polynomials)):
             polynomials[i] *= current_instruction
 
+        for p in polynomials:
+            print(p)
         return polynomials  # max degree: 4
 
     @staticmethod
