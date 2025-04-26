@@ -6,7 +6,14 @@ Tutorial for designing and impementing a STARK-compatible VM, along with a fully
 
 The tutorial is available at [Github-Pages](https://aszepieniec.github.io/stark-brainfuck/).
 
-## Running locally (the website, not the tutorial)
+
+## Implementing extra functionality for the VM
+
+- [x] Adding `^` operator
+- [ ] Adding binary operations
+  - [ ] `*` and `=` for multiplication
+
+<!-- ## Running locally (the website, not the tutorial)
 
  1. Install ruby
  2. Install bundler
@@ -43,4 +50,4 @@ MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
-```
+``` -->
